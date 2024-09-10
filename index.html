@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  function playGame() {
+      // Reset scores for a new game
+      let humanScore = 0;
+      let computerScore = 0;
+  
+      // Play 5 rounds
+      for (let i = 1; i <= 5; i++) {
+          console.log(`Round ${i}:`);
+  
+          const humanChoice = getHumanChoice();
+          const computerChoice = getComputerChoice();
+          
+          // Update scores based on the round winner
+          const result = playRound(humanChoice, computerChoice);
+          humanScore += result.humanScore;
+          computerScore += result.computerScore;
+  
+          if (humanScore > computerScore) {
+              console.log("You're in the lead!");
+          } else if (humanScore < computerScore) {
+              console.log("Computer is in the lead!");
+          } else {
+              console.log("It's a tie so far.");
+          }
+  
+          console.log(`Current Score - Human: ${humanScore}, Computer: ${computerScore}`);
+          console.log("---");
+      }
+  
+      // Determine the overall winner
+      if (humanScore > computerScore) {
+          console.log("Congratulations, you won the game!");
+      } else if (humanScore < computerScore) {
+          console.log("Sorry, the computer won the game.");
+      } else {
+          console.log("It's a tie game!");
+      }
+  }
+  
+  // Function to play a single round
+  function playRound(humanChoice, computerChoice) {
+      let humanScore = 0;
+      let computerScore = 0;
+  
+      // Determine the winner of the round
+      const lowerHumanChoice = humanChoice.toLowerCase();
+  
+      if (lowerHumanChoice === computerChoice) {
+          console.log(`It's a tie! Both chose ${lowerHumanChoice}.`);
+      } else if (
+          (lowerHumanChoice === 'rock' && computerChoice === 'scissors') ||
+          (lowerHumanChoice === 'paper' && computerChoice === 'rock') ||
+          (lowerHumanChoice === 'scissors' && computerChoice === 'paper')
+      ) {
+          console.log(`You win this round! ${capitalize(lowerHumanChoice)} beats ${capitalize(computerChoice)}.`);
+          humanScore++;
+      } else {
+          console.log(`You lose this round! ${capitalize(computerChoice)} beats ${capitalize(lowerHumanChoice)}.`);
+          computerScore++;
+      }
+  
+      return { humanScore, computerScore }; // 返回分数对象
+  }
+  
+  // Helper function to capitalize the first letter of a string
+  function capitalize(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  
+  // Function to get computer's choice
+  function getComputerChoice() {
+      const choices = ["rock", "paper", "scissors"];
+      const randomIndex = Math.floor(Math.random() * choices.length);
+      return choices[randomIndex];
+  }
+  
+  // Function to get human's choice
+  function getHumanChoice() {
+      const validChoices = ["rock", "paper", "scissors"];
+      let userInput = prompt("Please enter your choice (rock, paper, or scissors):").toLowerCase();
+  
+      // Validate user input
+      while (!validChoices.includes(userInput)) {
+          userInput = prompt("Invalid choice. Please enter rock, paper, or scissors:").toLowerCase();
+      }
+  
+      return userInput;
+  }
+  
+  // Start the game
+  playGame();
+  </script>
+</html>
