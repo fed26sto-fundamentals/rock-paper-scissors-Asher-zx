@@ -4,101 +4,106 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+ <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  
+    <h1>Play With Me</h1>
+
+    <div class="typeofbtn">
+        <div>
+        <button class="choice" data-choice="rock">&#128074;</button>
+       </div>
+       <div>
+        <button class="choice" data-choice="paper">&#9995;</button>
+       </div>
+       <div>
+        <button class="choice" data-choice="scissors">&#9996;</button>
+       </div>
+    </div>
+
+    <div id="container" class="result"></div>
+
+    <div id="scoreboard">
+        <span id="humanScore">0</span> - <span id="computerScore">0</span>
+    </div>
+    
+
 </body>
 <script>
-  function playGame() {
-      // Reset scores for a new game
-      let humanScore = 0;
-      let computerScore = 0;
+
+    // Reset scores for a new game
+    let humanScore = 0;
+    let computerScore = 0;
+    let roundsPlayed = 0;
+    const totalRounds = 5;
+    let humanScoreDisplay = document.getElementById('humanScore');
+    let computerScoreDisplay = document.getElementById('computerScore');
+
   
-      // Play 5 rounds
-      for (let i = 1; i <= 5; i++) {
-          console.log(`Round ${i}:`);
-  
-          const humanChoice = getHumanChoice();
-          const computerChoice = getComputerChoice();
-          
-          // Update scores based on the round winner
-          const result = playRound(humanChoice, computerChoice);
-          humanScore += result.humanScore;
-          computerScore += result.computerScore;
-  
-          if (humanScore > computerScore) {
-              console.log("You're in the lead!");
-          } else if (humanScore < computerScore) {
-              console.log("Computer is in the lead!");
-          } else {
-              console.log("It's a tie so far.");
-          }
-  
-          console.log(`Current Score - Human: ${humanScore}, Computer: ${computerScore}`);
-          console.log("---");
-      }
-  
-      // Determine the overall winner
-      if (humanScore > computerScore) {
-          console.log("Congratulations, you won the game!");
-      } else if (humanScore < computerScore) {
-          console.log("Sorry, the computer won the game.");
-      } else {
-          console.log("It's a tie game!");
-      }
-  }
-  
-  // Function to play a single round
-  function playRound(humanChoice, computerChoice) {
-      let humanScore = 0;
-      let computerScore = 0;
-  
-      // Determine the winner of the round
-      const lowerHumanChoice = humanChoice.toLowerCase();
-  
-      if (lowerHumanChoice === computerChoice) {
-          console.log(`It's a tie! Both chose ${lowerHumanChoice}.`);
-      } else if (
-          (lowerHumanChoice === 'rock' && computerChoice === 'scissors') ||
-          (lowerHumanChoice === 'paper' && computerChoice === 'rock') ||
-          (lowerHumanChoice === 'scissors' && computerChoice === 'paper')
-      ) {
-          console.log(`You win this round! ${capitalize(lowerHumanChoice)} beats ${capitalize(computerChoice)}.`);
-          humanScore++;
-      } else {
-          console.log(`You lose this round! ${capitalize(computerChoice)} beats ${capitalize(lowerHumanChoice)}.`);
-          computerScore++;
-      }
-  
-      return { humanScore, computerScore }; // 返回分数对象
-  }
-  
-  // Helper function to capitalize the first letter of a string
-  function capitalize(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-  
-  // Function to get computer's choice
-  function getComputerChoice() {
+    // Function to get computer's choice
+    function getComputerChoice() {
       const choices = ["rock", "paper", "scissors"];
       const randomIndex = Math.floor(Math.random() * choices.length);
       return choices[randomIndex];
   }
-  
-  // Function to get human's choice
-  function getHumanChoice() {
-      const validChoices = ["rock", "paper", "scissors"];
-      let userInput = prompt("Please enter your choice (rock, paper, or scissors):").toLowerCase();
-  
-      // Validate user input
-      while (!validChoices.includes(userInput)) {
-          userInput = prompt("Invalid choice. Please enter rock, paper, or scissors:").toLowerCase();
+
+  // Function to play a single round
+  function playRound(playerSelection, computerSelection) {
+    playerSelection = playerSelection.toLowerCase ();
+
+      if (playerSelection === computerSelection) {
+          return "`It's a tie!`";
+      } else if (
+          (playerSelection === 'rock' && computerSelection === 'scissors') ||
+          (playerSelection === 'paper' && computerSelection === 'rock') ||
+          (playerSelection === 'scissors' && computerSelection === 'paper')
+      ) {
+          humanScore++;
+          return `You win this round! ${playerSelection} beats ${computerSelection}.`;
+          
+      } else {
+        computerScore++;
+          return `You lose this round! ${computerSelection} beats ${playerSelection}.`;
+          
       }
-  
-      return userInput;
   }
+
+  const resultContainer = document.getElementById('container');
+  const scoreboard = document.getElementById('scoreboard');
+  const choiceButtons = document.querySelectorAll(`.choice`);
   
-  // Start the game
-  playGame();
+  
+  choiceButtons.forEach(button => {
+    button.addEventListener(`click`, () => {
+        if (roundsPlayed < totalRounds) {
+            const playerSelection = button.dataset.choice;
+            const computerSelection = getComputerChoice();
+            const roundResult = playRound(playerSelection, computerSelection);
+            resultContainer.textContent = roundResult;
+
+            humanScoreDisplay.textContent = humanScore;
+            computerScoreDisplay.textContent = computerScore;
+            roundsPlayed++;
+
+            // check if the game has ended after 5 rounds
+            if (roundsPlayed === totalRounds) {
+                announceWinner ();
+            }
+        }
+    })
+  })
+
+//  function to announce the overall winner;
+function announceWinner() {
+    if (humanScore > computerScore) {
+        resultContainer.textContent += `You won the game! Final Score - You: ${humanScore}, Computer: ${computerScore}`;
+    } else if (humanScore < computerScore) {
+        resultContainer.textContent += `Computer won the game! Final Score - You: ${humanScore}, Computer: ${computerScore}`;
+        
+    } else {
+        resultContainer.textContent += `It's a tie game`
+    }
+}
+
   </script>
 </html>
